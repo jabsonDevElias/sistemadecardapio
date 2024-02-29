@@ -1,5 +1,7 @@
 import React from "react";
-import './Home.css';
+import '../App.css';
+import ModalPedido from "./ModalPedido";
+
 
 function App() {
     var bottoesMesa = [];
@@ -32,7 +34,12 @@ function App() {
 
             <div className="card col-5  rounded rounded-2 p-3">
                 <div className="col-12 d-flex flex-wrap">
-                    {bottoesMesa.map(item => <button className="btn btn-purple col-1 border border-1 border-transparent">{item}</button>)}
+                    {bottoesMesa.map(item => (
+                        <> 
+                        <ModalPedido idMesa={item} />
+                        <button className="btn btn-purple col-1 border border-1 border-transparent" data-bs-toggle="modal" data-bs-target={`#modalMesa${item}`}>{item}</button>
+                        </>
+                    ))}
                 </div>
             </div>
         </div>
