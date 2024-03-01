@@ -13,7 +13,8 @@ function App() {
     return (
         <div className="d-flex flex-wrap col-12 justify-content-between">
             <div className="col-12">
-                <button type="button" className="btn btn-purple">+ Criar Pedido</button>
+                <button type="button" className="btn btn-purple" data-bs-toggle="modal" data-bs-target={`#modalMesa${0}`}>+ Criar Pedido</button>
+                <ModalPedido idMesa={0}/>
             </div>
             <h5 className="mt-3 mb-3 text-secondary col-6">Hoje</h5>
             <h5 className="mt-3 mb-3 text-secondary col-5">Mesas</h5>

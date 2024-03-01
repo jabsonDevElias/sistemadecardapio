@@ -17,6 +17,24 @@ function ModalPedido(props) {
     const [selected, setSelected] = React.useState([]);
     const [options, setOptions] = React.useState([]);
 
+
+    var disabled = true;
+
+    var bottoesMesa = [props.idMesa];
+
+    if (props.idMesa == 0) {
+
+        disabled = false;
+
+        bottoesMesa = [];
+
+        for (let i = 1; i <= 99; i++) {
+            bottoesMesa.push(i);
+        }
+
+
+    }
+
     return (
         <div class={`modal fade`} id={`modalMesa${props.idMesa}`} data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -26,14 +44,20 @@ function ModalPedido(props) {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form class="modal-body" method="post">
-                        <div className="col-12">
-                            <label>Nome:</label>
-                            <input type='text' className="form-control" />
+                        <div className="col-12 d-flex justify-content-between gap-2">
+                            <div className="col-6">
+                                <label>Nome:</label>
+                                <input type='text' className="form-control" />
+                            </div>
+                            <div className="col-6">
+                                <label>Telefone:</label>
+                                <input type='text' className="form-control" />
+                            </div>
                         </div>
                         <div className="col-12">
                             <label>Mesa:</label>
-                            <select class="form-select" aria-label="Default select example" disabled={(props.idMesa)?'true':'false'}>
-                                <option value={props.idMesa}>{props.idMesa}</option>
+                            <select class="form-select" aria-label="Default select example" disabled={disabled}>
+                                {bottoesMesa.map(item => <option value={item}>{item}</option>)}
                             </select>
                         </div>
                         <div className="col-12 d-flex">
@@ -41,12 +65,12 @@ function ModalPedido(props) {
                                 <label>Produto:</label>
                                 {/* <input type='text' className="form-control" /> */}
                                 <Typeahead
-                                        id="basic-example"
-                                        onChange={setSelected}
-                                        options={options}
-                                        placeholder="Escolha o produto..."
-                                        selected={selected}
-                                    />
+                                    id="basic-example"
+                                    onChange={setSelected}
+                                    options={options}
+                                    placeholder="Escolha o produto..."
+                                    selected={selected}
+                                />
                             </div>
                         </div>
                         <div className="col-12 d-flex mt-4">
@@ -70,6 +94,11 @@ function ModalPedido(props) {
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div className="col-12 text-end mt-5">
+                            <input type="submit" value="Descontos" className="btn btn-success" />
+                            <input type="submit" value="Finalizar Pedido" className="btn btn-purple  border border-1 border-transparent" />
                         </div>
 
                     </form>
