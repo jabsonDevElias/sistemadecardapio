@@ -32,7 +32,7 @@ var DB = {
 }
 
 //GET SEMPRE RETORNA DADOS E POST SEM CADASTRA DADOS
-app.get("/games",(req,res) => {
+app.get("/mesas",(req,res) => {
     res.statusCode = 200;
     res.json(DB.games);
 });
