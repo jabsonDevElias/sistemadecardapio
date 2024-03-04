@@ -3,33 +3,46 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+const connection = require("./database/database");
+
+//model
+const Mesas = require("./database/mesas");
+const Pedidos = require("./database/pedidos");
+//model
+
+connection.authenticate().then(() => {
+    console.log("Conexão feita com o BD");
+}).catch((msgErro) =>{
+    console.log("Failha na Conexão com o BD");
+})
+
 app.use(cors());
 
 app.use(bodyParser.urlencoded({elevation: false}));
 app.use(bodyParser.json());
 
-var DB = {
-    games:[
-        {
-            id:23,
-            title:"Call od Duty MW",
-            year:2019,
-            price:60
-        },
-        {
-            id:65,
-            title:"Sea of Thifes",
-            year:2018,
-            price:60
-        },
-        {
-            id:2,
-            title:"Minecraft",
-            year:2019,
-            price:60
-        }
-    ]
-}
+// var DB = {
+//     games:[
+//         {
+//             id:23,
+//             title:"Call od Duty MW",
+//             year:2019,
+//             price:60
+//         },
+//         {
+//             id:65,
+//             title:"Sea of Thifes",
+//             year:2018,
+//             price:60
+//         },
+//         {
+//             id:2,
+//             title:"Minecraft",
+//             year:2019,
+//             price:60
+//         }
+//     ]
+// }
 
 //GET SEMPRE RETORNA DADOS E POST SEM CADASTRA DADOS
 app.get("/mesas",(req,res) => {
@@ -56,15 +69,19 @@ app.get("/games/:id",(req,res) => {
 
 });
 
-app.post("/game",(req,res) => {
+app.post("/pedido/cadastrar",(req,res) => {
     var {title,price,year} = req.body;
 
-    DB.games.push({
-        id:2323,
-        title,
-        price,
-        year
-    });
+    Pedidos.create({
+        pedi_tx_cliente:'Jabson Elias da Silva',
+        pedi_nb_mesa:1,
+        pedi_tx_valorTotalSemDesconto:10.56,
+        pedi_tx_qtdCardapio:1,
+        pedi_tx_desconto:(10.56*5.00)/100,
+        pedi_tx_valorTotalComDesconto:10.56 - (10.56*5.00)/100,
+        pedi_tx_status:'ativo'    
+      });
+
 
     res.sendStatus(200);
 });
