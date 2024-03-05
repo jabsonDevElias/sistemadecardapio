@@ -10,8 +10,8 @@ const Mesas = connection.define('mesas',{
  });
 
  //ESSE {force:false}. PERMITE QUE SÓ CRIE A TABELA SE ELA NÃO EXISTIR
- Mesas.sync({force:false}).then(() => {
-    console.log("Tabela Mesas criada com Sucesso!")
-})
+//  Mesas.sync({force:false}).then(() => {
+//     console.log("Tabela Mesas criada com Sucesso!")
+// })
 
 module.exports = Mesas;

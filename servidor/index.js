@@ -47,7 +47,10 @@ app.use(bodyParser.json());
 //GET SEMPRE RETORNA DADOS E POST SEM CADASTRA DADOS
 app.get("/mesas",(req,res) => {
     res.statusCode = 200;
-    res.json(DB.games);
+
+    Mesas.findAll({raw: true,order:[['id','DESC']]}).then(item => {
+          res.json(item);
+    });
 });
 
 app.get("/games/:id",(req,res) => {

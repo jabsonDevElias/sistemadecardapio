@@ -32,8 +32,8 @@ const Pedidos = connection.define('pedidos',{
     },
  });
 
- Pedidos.sync({force:false}).then(() => {
-    console.log("Tabela Pedidos criada com Sucesso!")
-})
+//  Pedidos.sync({force:false}).then(() => {
+//     console.log("Tabela Pedidos criada com Sucesso!")
+// })
 
 module.exports = Pedidos;
