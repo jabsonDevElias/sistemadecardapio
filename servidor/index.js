@@ -49,25 +49,30 @@ app.get("/mesas",(req,res) => {
     res.statusCode = 200;
 
     Mesas.findAll({raw: true,order:[['id','DESC']]}).then(item => {
-          res.json(item);
+        res.json(item);
     });
+
 });
 
-app.get("/games/:id",(req,res) => {
+app.get("/mesas/:id",(req,res) => {
     var id = req.params.id;
 
     if(isNaN(id)){
         res.sendStatus(400);
     }else{
         res.statusCode = 200;
-        var game = DB.games.find(g => g.id == id);
+        
+        Mesas.findAll({raw: true,order:[['id','DESC']],where:{id:id}}).then(item => {
+            
+            if(item != undefined){
+                res.statusCode = 200;
+                res.json(item);
+            }else{
+                res.sendStatus(404);
+            }
+        });
 
-        if(game != undefined){
-            res.statusCode = 200;
-            res.json(game);
-        }else{
-            res.sendStatus(404);
-        }
+
     }
 
 });
