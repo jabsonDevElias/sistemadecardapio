@@ -1,7 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-
+import axios from 'axios';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
@@ -16,24 +16,21 @@ function ModalPedido(props) {
 </button> */}
     const [selected, setSelected] = React.useState([]);
     const [options, setOptions] = React.useState([]);
+    const [disabled, setDisables] = React.useState(true);
+    const [data, setData] = React.useState([{id:props.idMesa}]);
 
-
-    var disabled = true;
-
-    var bottoesMesa = [props.idMesa];
-
-    if (props.idMesa == 0) {
-
-        disabled = false;
-
-        bottoesMesa = [];
-
-        for (let i = 1; i <= 99; i++) {
-            bottoesMesa.push(i);
-        }
-
-
-    }
+    React.useEffect(() => {
+        if(props.idMesa == 0){
+            setDisables(false);
+            axios.get('http://localhost:3003/mesas/')
+              .then(response => {
+                setData(response.data);
+              })
+              .catch(error => {
+                console.error('Error fetching data:', error);
+              });
+            }
+    }, []);
 
     return (
         <div class={`modal fade`} id={`modalMesa${props.idMesa}`} data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -57,7 +54,7 @@ function ModalPedido(props) {
                         <div className="col-12">
                             <label>Mesa:</label>
                             <select class="form-select" aria-label="Default select example" disabled={disabled}>
-                                {bottoesMesa.map(item => <option value={item}>{item}</option>)}
+                                {data.map(item => <option value={item.id}>{item.id}</option>)}
                             </select>
                         </div>
                         <div className="col-12 d-flex">

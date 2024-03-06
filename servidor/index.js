@@ -8,6 +8,7 @@ const connection = require("./database/database");
 //model
 const Mesas = require("./database/mesas");
 const Pedidos = require("./database/pedidos");
+const Produtos = require("./database/produtos");
 //model
 
 connection.authenticate().then(() => {
@@ -45,6 +46,39 @@ app.use(bodyParser.json());
 // }
 
 //GET SEMPRE RETORNA DADOS E POST SEM CADASTRA DADOS
+
+app.get("/produtos",(req,res) => {
+    res.statusCode = 200;
+
+    Produtos.findAll({raw: true,order:[['id','DESC']]}).then(item => {
+        res.json(item);
+    });
+
+});
+
+app.get("/produtos/:id",(req,res) => {
+    var id = req.params.id;
+
+    if(isNaN(id)){
+        res.sendStatus(400);
+    }else{
+        res.statusCode = 200;
+        
+        Produtos.findAll({raw: true,order:[['id','DESC']],where:{id:id}}).then(item => {
+            
+            if(item != undefined){
+                res.statusCode = 200;
+                res.json(item);
+            }else{
+                res.sendStatus(404);
+            }
+        });
+
+
+    }
+
+});
+
 app.get("/mesas",(req,res) => {
     res.statusCode = 200;
 

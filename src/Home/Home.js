@@ -1,14 +1,23 @@
 import React from "react";
 import '../App.css';
+import axios from 'axios';
 import ModalPedido from "./ModalPedido";
 
 
 function App() {
-    var bottoesMesa = [];
 
-    for (let i = 1; i <= 99; i++) {
-        bottoesMesa.push(i);
-    }
+    const [data, setData] = React.useState([]);
+
+    React.useEffect(() => {
+        axios.get('http://localhost:3003/mesas/')
+          .then(response => {
+            setData(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+      }, []);
+
 
     return (
         <div className="d-flex flex-wrap col-12 justify-content-between">
@@ -35,10 +44,10 @@ function App() {
 
             <div className="card col-5  rounded rounded-2 p-3">
                 <div className="col-12 d-flex flex-wrap">
-                    {bottoesMesa.map(item => (
+                    {data.map(item => (
                         <> 
-                        <ModalPedido idMesa={item} />
-                        <button className="btn btn-purple col-1 border border-1 border-transparent" data-bs-toggle="modal" data-bs-target={`#modalMesa${item}`}>{item}</button>
+                        <ModalPedido idMesa={item.id} />
+                        <button className="btn btn-purple col-1 border border-1 border-transparent" data-bs-toggle="modal" data-bs-target={`#modalMesa${item.id}`}>{item.id}</button>
                         </>
                     ))}
                 </div>
