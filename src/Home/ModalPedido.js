@@ -18,6 +18,10 @@ function ModalPedido(props) {
     const [options, setOptions] = React.useState([]);
     const [disabled, setDisables] = React.useState(true);
     const [data, setData] = React.useState([{id:props.idMesa}]);
+    const [produto, setProduto] = React.useState([""]);
+
+    // const options = ['Option 1', 'Option 2', 'Option 3'];
+
 
     React.useEffect(() => {
         if(props.idMesa == 0){
@@ -25,6 +29,18 @@ function ModalPedido(props) {
             axios.get('http://localhost:3003/mesas/')
               .then(response => {
                 setData(response.data);
+              })
+              .catch(error => {
+                console.error('Error fetching data:', error);
+              });
+            }
+    }, []);
+
+    React.useEffect(() => {
+        if(props.idMesa == 0){
+            axios.get('http://localhost:3003/produtos/')
+              .then(response => {
+                setOptions(response.data);
               })
               .catch(error => {
                 console.error('Error fetching data:', error);
@@ -64,7 +80,7 @@ function ModalPedido(props) {
                                 <Typeahead
                                     id="basic-example"
                                     onChange={setSelected}
-                                    options={options}
+                                    options={options.map(item => item.prod_tx_nome)}
                                     placeholder="Escolha o produto..."
                                     selected={selected}
                                 />
