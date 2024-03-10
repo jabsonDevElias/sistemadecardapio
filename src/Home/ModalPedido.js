@@ -1,8 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
 import axios from 'axios';
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 
@@ -11,16 +12,29 @@ import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 
 
 function ModalPedido(props) {
-    {/* <button type="button" class="btn btn-primary" data-bs-toggle="modalMesa" data-bs-target="#staticBackdrop">
-  Launch static backdrop modal
-</button> */}
+
     const [selected, setSelected] = React.useState([]);
     const [options, setOptions] = React.useState([]);
     const [disabled, setDisables] = React.useState(true);
     const [data, setData] = React.useState([{id:props.idMesa}]);
-    const [produto, setProduto] = React.useState([""]);
+    const [isLoading, setIsLoading] = React.useState(false);
 
-    // const options = ['Option 1', 'Option 2', 'Option 3'];
+    const buscaproduto = (query) => {
+          setIsLoading(true);
+
+          axios.get(`http://localhost:3003/produtos/${query}`)
+          .then(response => {
+            console.log(response);
+            setOptions(response.data);
+            setIsLoading(false);
+          })
+          .catch(error => {
+            setIsLoading(false);
+            console.error('Error fetching data:', error);
+          });
+     }
+
+
 
 
     React.useEffect(() => {
@@ -36,17 +50,6 @@ function ModalPedido(props) {
             }
     }, []);
 
-    React.useEffect(() => {
-        if(props.idMesa == 0){
-            axios.get('http://localhost:3003/produtos/')
-              .then(response => {
-                setOptions(response.data);
-              })
-              .catch(error => {
-                console.error('Error fetching data:', error);
-              });
-            }
-    }, []);
 
     return (
         <div class={`modal fade`} id={`modalMesa${props.idMesa}`} data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -59,7 +62,7 @@ function ModalPedido(props) {
                     <form class="modal-body" method="post">
                         <div className="col-12 d-flex justify-content-between gap-2">
                             <div className="col-6">
-                                <label>Nome:</label>
+                                <label>Nome: </label>
                                 <input type='text' className="form-control" />
                             </div>
                             <div className="col-6">
@@ -76,13 +79,14 @@ function ModalPedido(props) {
                         <div className="col-12 d-flex">
                             <div className="col-12">
                                 <label>Produto:</label>
-                                {/* <input type='text' className="form-control" /> */}
-                                <Typeahead
-                                    id="basic-example"
-                                    onChange={setSelected}
+                                <AsyncTypeahead
+                                    id="meuAsyncTypeahead"
+                                    isLoading={isLoading}
+                                    labelKey="label"
+                                    minLength={3}
+                                    onSearch={buscaproduto}
                                     options={options.map(item => item.prod_tx_nome)}
-                                    placeholder="Escolha o produto..."
-                                    selected={selected}
+                                    placeholder="Digite para buscar na API..."
                                 />
                             </div>
                         </div>

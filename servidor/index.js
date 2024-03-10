@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const connection = require("./database/database");
+const { Op } = require('sequelize');
 
 //model
 const Mesas = require("./database/mesas");
@@ -47,7 +48,7 @@ app.use(bodyParser.json());
 
 //GET SEMPRE RETORNA DADOS E POST SEM CADASTRA DADOS
 
-app.get("/produtos",(req,res) => {
+app.post("/produtos",(req,res) => {
     res.statusCode = 200;
 
     Produtos.findAll({raw: true,order:[['id','DESC']]}).then(item => {
@@ -56,7 +57,7 @@ app.get("/produtos",(req,res) => {
 
 });
 
-app.get("/produtos/:id",(req,res) => {
+app.post("/produtos/:id",(req,res) => {
     var id = req.params.id;
 
     if(isNaN(id)){
@@ -65,6 +66,31 @@ app.get("/produtos/:id",(req,res) => {
         res.statusCode = 200;
         
         Produtos.findAll({raw: true,order:[['id','DESC']],where:{id:id}}).then(item => {
+            
+            if(item != undefined){
+                res.statusCode = 200;
+                res.json(item);
+            }else{
+                res.sendStatus(404);
+            }
+        });
+
+
+    }
+
+});
+app.get("/produtos/:query",(req,res) => {
+    var query = req.params.query;
+
+    if(!query.length){
+        res.sendStatus(400);
+    }else{
+        res.statusCode = 200;
+        
+        Produtos.findAll({raw: true,order:[['id','DESC']],where:{
+          prod_tx_nome: {
+            [Op.like]: `%${query}%`,
+          }}}).then(item => {
             
             if(item != undefined){
                 res.statusCode = 200;
