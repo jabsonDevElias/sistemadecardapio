@@ -1,6 +1,6 @@
 import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import axios from 'axios';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
@@ -24,7 +24,6 @@ function ModalPedido(props) {
 
           axios.get(`http://localhost:3003/produtos/${query}`)
           .then(response => {
-            console.log(response);
             setOptions(response.data);
             setIsLoading(false);
           })
@@ -49,6 +48,14 @@ function ModalPedido(props) {
               });
             }
     }, []);
+
+    const selecionarItem = (selected) => {
+        let produto = selected.length;
+        if(produto){
+            setSelected(produto=> [...produto,selected[0]]);
+            
+        }
+      };
 
 
     return (
@@ -76,8 +83,8 @@ function ModalPedido(props) {
                                 {data.map(item => <option value={item.id}>{item.id}</option>)}
                             </select>
                         </div>
-                        <div className="col-12 d-flex">
-                            <div className="col-12">
+                        <div className="col-12 d-flex align-items-center justify-content-between">
+                            <div className="col-11">
                                 <label>Produto:</label>
                                 <AsyncTypeahead
                                     id="meuAsyncTypeahead"
@@ -85,9 +92,16 @@ function ModalPedido(props) {
                                     labelKey="label"
                                     minLength={3}
                                     onSearch={buscaproduto}
-                                    options={options.map(item => item.prod_tx_nome)}
+                                    options={options.map(item => `${item.id} - ${item.prod_tx_nome}`)}
                                     placeholder="Digite para buscar na API..."
+                                    onChange={selecionarItem}
                                 />
+                            </div>
+                            <div className="col-1 d-flex flex-wrap justify-content-center">
+                                <label className="col-12">&nbsp;</label>
+                                <button className="btn btn-success" >
+                                    <FontAwesomeIcon icon={faPlus} />
+                                </button>
                             </div>
                         </div>
                         <div className="col-12 d-flex mt-4">
@@ -102,13 +116,18 @@ function ModalPedido(props) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">1</th>
-                                        <td>Mark</td>
-                                        <td>Otto</td>
-                                        <td>@mdo</td>
-                                        <td><a href="#"><FontAwesomeIcon className="text-danger" icon={faTrash} /></a></td>
-                                    </tr>
+
+                                    {
+                                        selected.map(item => 
+                                            <tr>
+                                                <th scope="row">1</th>
+                                                <td>{item}</td>
+                                                <td>Otto</td>
+                                                <td>@mdo</td>
+                                                <td><a href="#"><FontAwesomeIcon className="text-danger" icon={faTrash} /></a></td>
+                                            </tr>
+                                        )
+                                    }
                                 </tbody>
                             </table>
                         </div>
