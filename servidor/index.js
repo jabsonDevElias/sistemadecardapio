@@ -57,7 +57,7 @@ app.post("/produtos",(req,res) => {
 
 });
 
-app.post("/produtos/:id",(req,res) => {
+app.get("/produto/:id",(req,res) => {
     var id = req.params.id;
 
     if(isNaN(id)){

@@ -50,13 +50,45 @@ function ModalPedido(props) {
     }, []);
 
     const selecionarItem = (selected) => {
-        let produto = selected.length;
-        if(produto){
-            setSelected(produto=> [...produto,selected[0]]);
-            
+    
+       if(selected.length){
+
+            let produto = selected[0];
+            produto = selected[0].split("-");
+
+            setIsLoading(true);
+
+            axios.get(`http://localhost:3003/produto/${produto[0]}`)
+            .then(response => {
+                setSelected(produto => [
+                    ...produto,
+                    {
+                      idproduto: response.data[0].id,
+                      nomeProduto: response.data[0].prod_tx_nome,
+                      valorProduto: response.data[0].prod_tx_valor
+                    }
+                ]);  
+                setIsLoading(false);
+            })
+            .catch(error => {
+                setIsLoading(false);
+                console.error('Error fetching data:', error);
+            });
         }
+
+        // let novoProduto = {
+        //     nome: 'João',
+        //     idade: 25,
+        //     ocupacao: 'Desenvolvedor'
+        // };
+        
+        // if(produto){
+        //     setSelected(produto=> [...produto,selected[0]]);      
+        // }
       };
 
+
+      console.log(selected);
 
     return (
         <div class={`modal fade`} id={`modalMesa${props.idMesa}`} data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -84,7 +116,7 @@ function ModalPedido(props) {
                             </select>
                         </div>
                         <div className="col-12 d-flex align-items-center justify-content-between">
-                            <div className="col-11">
+                            <div className="col-12">
                                 <label>Produto:</label>
                                 <AsyncTypeahead
                                     id="meuAsyncTypeahead"
@@ -97,12 +129,12 @@ function ModalPedido(props) {
                                     onChange={selecionarItem}
                                 />
                             </div>
-                            <div className="col-1 d-flex flex-wrap justify-content-center">
+                            {/* <div className="col-1 d-flex flex-wrap justify-content-center">
                                 <label className="col-12">&nbsp;</label>
                                 <button className="btn btn-success" >
                                     <FontAwesomeIcon icon={faPlus} />
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
                         <div className="col-12 d-flex mt-4">
                             <table class="table">
@@ -120,10 +152,10 @@ function ModalPedido(props) {
                                     {
                                         selected.map(item => 
                                             <tr>
-                                                <th scope="row">1</th>
-                                                <td>{item}</td>
-                                                <td>Otto</td>
-                                                <td>@mdo</td>
+                                                <th scope="row">{item.idproduto}</th>
+                                                <td>{item.nomeProduto}</td>
+                                                <td>{item.valorProduto}</td>
+                                                <td><input className="form-control" type="number"/></td>
                                                 <td><a href="#"><FontAwesomeIcon className="text-danger" icon={faTrash} /></a></td>
                                             </tr>
                                         )
