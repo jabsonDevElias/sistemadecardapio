@@ -13,7 +13,7 @@ import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 
 function ModalPedido(props) {
 
-    const [selected, setSelected] = React.useState([]);
+    const [selected, setSelected] = React.useState([{idproduto:0}]);
     const [options, setOptions] = React.useState([]);
     const [disabled, setDisables] = React.useState(true);
     const [data, setData] = React.useState([{id:props.idMesa}]);
@@ -49,6 +49,22 @@ function ModalPedido(props) {
             }
     }, []);
 
+    function verificarID(novoID) {
+
+       var callback=true;
+       selected.forEach((item,key) => {
+           if(item.idproduto == novoID){
+            selected[key].qtdProduto++;
+            callback = false;
+           }
+       });
+ 
+    //    setSelected([]);
+    //    setSelected(selected);
+       return callback;
+    }
+
+
     const selecionarItem = (selected) => {
     
        if(selected.length){
@@ -58,16 +74,22 @@ function ModalPedido(props) {
 
             setIsLoading(true);
 
+          
             axios.get(`http://localhost:3003/produto/${produto[0]}`)
             .then(response => {
-                setSelected(produto => [
-                    ...produto,
-                    {
-                      idproduto: response.data[0].id,
-                      nomeProduto: response.data[0].prod_tx_nome,
-                      valorProduto: response.data[0].prod_tx_valor
-                    }
-                ]);  
+
+                if(verificarID(response.data[0].id)){
+                    setSelected(produto => [
+                        ...produto,
+                        {
+                        idproduto: response.data[0].id,
+                        nomeProduto: response.data[0].prod_tx_nome,
+                        valorProduto: response.data[0].prod_tx_valor,
+                        qtdProduto:1
+                        }
+                    ]);  
+                }
+
                 setIsLoading(false);
             })
             .catch(error => {
@@ -76,19 +98,8 @@ function ModalPedido(props) {
             });
         }
 
-        // let novoProduto = {
-        //     nome: 'João',
-        //     idade: 25,
-        //     ocupacao: 'Desenvolvedor'
-        // };
-        
-        // if(produto){
-        //     setSelected(produto=> [...produto,selected[0]]);      
-        // }
       };
 
-
-      console.log(selected);
 
     return (
         <div class={`modal fade`} id={`modalMesa${props.idMesa}`} data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -150,12 +161,12 @@ function ModalPedido(props) {
                                 <tbody>
 
                                     {
-                                        selected.map(item => 
+                                        selected.filter(item => item.idproduto != 0).map(item => 
                                             <tr>
                                                 <th scope="row">{item.idproduto}</th>
                                                 <td>{item.nomeProduto}</td>
                                                 <td>{item.valorProduto}</td>
-                                                <td><input className="form-control" type="number"/></td>
+                                                <td><input className="form-control" type="number" value={item.qtdProduto}/></td>
                                                 <td><a href="#"><FontAwesomeIcon className="text-danger" icon={faTrash} /></a></td>
                                             </tr>
                                         )
