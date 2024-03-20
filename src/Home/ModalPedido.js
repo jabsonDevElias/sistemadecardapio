@@ -177,9 +177,9 @@ function ModalPedido(props) {
                                             <tr>
                                                 <th scope="row">{item.idproduto}</th>
                                                 <td>{item.nomeProduto}</td>
-                                                <td>{item.valorProduto}</td>
+                                                <td>{formatarParaReal(item.valorProduto*1)}</td>
                                                 <td>{item.qtdProduto}</td>  
-                                                <td>{(item.valorProduto*item.qtdProduto)}</td>  
+                                                <td>{formatarParaReal(item.valorProduto*item.qtdProduto)}</td>  
                                                 <td><InputMask className="form-control" mask="9999" maskChar="" type="text" onChange={e => {                                               
                                                 const salvaArray = [...selected];
                                                 salvaArray[key+1].qtdProduto = e.target.value;
