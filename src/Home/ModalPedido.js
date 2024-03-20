@@ -6,8 +6,7 @@ import axios from 'axios';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
-
-
+import InputMask from 'react-input-mask';
 
 
 
@@ -15,9 +14,15 @@ function ModalPedido(props) {
 
     const [selected, setSelected] = React.useState([{idproduto:0}]);
     const [options, setOptions] = React.useState([]);
+    const [desconto, setDesconto] = React.useState(0);
+    const [valortotal, setValorTotal] = React.useState(0);
     const [disabled, setDisables] = React.useState(true);
     const [data, setData] = React.useState([{id:props.idMesa}]);
     const [isLoading, setIsLoading] = React.useState(false);
+
+    function formatarParaReal(valor) {
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
 
     const buscaproduto = (query) => {
           setIsLoading(true);
@@ -54,13 +59,14 @@ function ModalPedido(props) {
        var callback=true;
        selected.forEach((item,key) => {
            if(item.idproduto == novoID){
-            selected[key].qtdProduto++;
+            // selected[key].qtdProduto++;
             callback = false;
            }
        });
+       
  
     //    setSelected([]);
-    //    setSelected(selected);
+
        return callback;
     }
 
@@ -99,6 +105,7 @@ function ModalPedido(props) {
         }
 
       };
+
 
 
     return (
@@ -148,6 +155,7 @@ function ModalPedido(props) {
                             </div> */}
                         </div>
                         <div className="col-12 d-flex mt-4">
+                        
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -155,18 +163,37 @@ function ModalPedido(props) {
                                         <th scope="col">Nome</th>
                                         <th scope="col">Valor</th>
                                         <th scope="col">Quatidade</th>
+                                        <th scope="col">Total</th>
                                         <th scope="col"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
                                     {
-                                        selected.filter(item => item.idproduto != 0).map(item => 
+
+                                        
+                                        
+                                        selected.filter(item => item.idproduto != 0).map((item,key) => 
                                             <tr>
                                                 <th scope="row">{item.idproduto}</th>
                                                 <td>{item.nomeProduto}</td>
                                                 <td>{item.valorProduto}</td>
-                                                <td><input className="form-control" type="number" value={item.qtdProduto}/></td>
+                                                <td>{item.qtdProduto}</td>  
+                                                <td>{(item.valorProduto*item.qtdProduto)}</td>  
+                                                <td><InputMask className="form-control" mask="9999" maskChar="" type="text" onChange={e => {                                               
+                                                const salvaArray = [...selected];
+                                                salvaArray[key+1].qtdProduto = e.target.value;
+                                                setSelected(salvaArray);
+                                                    
+                                                    var novo_valor_total = 0;
+                                                    selected.filter(item => item.idproduto != 0).map((item,key) =>{
+                                                        novo_valor_total += item.valorProduto*item.qtdProduto;
+                                                    }
+                                                )
+                                                
+                                                setValorTotal(novo_valor_total);
+
+                                                }}  defaultValue={item.qtdProduto} /></td>
                                                 <td><a href="#"><FontAwesomeIcon className="text-danger" icon={faTrash} /></a></td>
                                             </tr>
                                         )
@@ -175,9 +202,15 @@ function ModalPedido(props) {
                             </table>
                         </div>
 
-                        <div className="col-12 text-end mt-5">
-                            <input type="submit" value="Descontos" className="btn btn-success" />
-                            <input type="submit" value="Finalizar Pedido" className="btn btn-purple  border border-1 border-transparent" />
+                        <div className="col-12 text-end mt-5 d-flex">
+                            <div className="col-6 text-start">
+                                <p className="m-0">Desconto: <span>{desconto}</span></p>
+                                <p className="m-0">Valor Total: <span>{formatarParaReal(valortotal)}</span></p>
+                            </div>
+                            <div className="col-6">
+                                <input type="submit" value="Descontos" className="btn btn-success" />
+                                <input type="submit" value="Finalizar Pedido" className="btn btn-purple  border border-1 border-transparent" />
+                            </div>
                         </div>
 
                     </form>
