@@ -2,11 +2,13 @@ import React from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 
+
 import axios from 'axios';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 import 'react-bootstrap-typeahead/css/Typeahead.bs5.css';
 import InputMask from 'react-input-mask';
+import RealCurrencyInput from 'react-currency-masked-input';
 
 
 
@@ -91,7 +93,7 @@ function ModalPedido(props) {
                         idproduto: response.data[0].id,
                         nomeProduto: response.data[0].prod_tx_nome,
                         valorProduto: response.data[0].prod_tx_valor,
-                        qtdProduto:1
+                        qtdProduto:""
                         }
                     ]);  
                 }
@@ -198,6 +200,15 @@ function ModalPedido(props) {
                                             </tr>
                                         )
                                     }
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>Desconto %</td>
+                                        <td><RealCurrencyInput className="form-control" name="myInput" placeholder="0" maxlength="6"/></td>
+                                        <td>&nbsp;</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
