@@ -16,11 +16,12 @@ function ModalPedido(props) {
 
     const [selected, setSelected] = React.useState([{idproduto:0}]);
     const [options, setOptions] = React.useState([]);
-    const [desconto, setDesconto] = React.useState(0);
+    const [desconto, setDesconto] = React.useState("00,00");
     const [valortotal, setValorTotal] = React.useState(0);
     const [disabled, setDisables] = React.useState(true);
     const [data, setData] = React.useState([{id:props.idMesa}]);
     const [isLoading, setIsLoading] = React.useState(false);
+    
 
     function formatarParaReal(valor) {
         return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -108,6 +109,7 @@ function ModalPedido(props) {
 
       };
 
+      console.log(desconto);
 
 
     return (
@@ -182,7 +184,7 @@ function ModalPedido(props) {
                                                 <td>{formatarParaReal(item.valorProduto*1)}</td>
                                                 <td>{item.qtdProduto}</td>  
                                                 <td>{formatarParaReal(item.valorProduto*item.qtdProduto)}</td>  
-                                                <td><InputMask className="form-control" mask="9999" maskChar="" type="text" onChange={e => {                                               
+                                                <td><InputMask className="form-control" mask="99999" maskChar="" type="text" onChange={e => {                                               
                                                 const salvaArray = [...selected];
                                                 salvaArray[key+1].qtdProduto = e.target.value;
                                                 setSelected(salvaArray);
@@ -205,8 +207,10 @@ function ModalPedido(props) {
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
                                         <td>&nbsp;</td>
-                                        <td>Desconto %</td>
-                                        <td><RealCurrencyInput className="form-control" name="myInput" placeholder="0" maxlength="6"/></td>
+                                        {(selected.length >= 2)?<><td>Desconto %</td><td>    
+                                        <InputMask className="form-control" mask="99" maskChar="" type="text" onChange={(e)=>setDesconto(e.target.value)}/>
+                                        </td></>:""}
+                                        
                                         <td>&nbsp;</td>
                                     </tr>
                                 </tbody>
@@ -215,11 +219,11 @@ function ModalPedido(props) {
 
                         <div className="col-12 text-end mt-5 d-flex">
                             <div className="col-6 text-start">
-                                <p className="m-0">Desconto: <span>{desconto}</span></p>
-                                <p className="m-0">Valor Total: <span>{formatarParaReal(valortotal)}</span></p>
+                                <p className="m-0">Subtotal: <span>{formatarParaReal(valortotal)}</span></p>
+                                <p className="m-0">Desconto: <span>{(desconto)?desconto:"0"} %</span></p>
+                                <p className="m-0">Total: <span>{formatarParaReal(valortotal-(valortotal*desconto.replace(",","."))/100)}</span></p>
                             </div>
                             <div className="col-6">
-                                <input type="submit" value="Descontos" className="btn btn-success" />
                                 <input type="submit" value="Finalizar Pedido" className="btn btn-purple  border border-1 border-transparent" />
                             </div>
                         </div>
